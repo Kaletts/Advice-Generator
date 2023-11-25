@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
+  <title>Generador de Consejos</title>
+
+  <style>
+    :root {
+      font-family: Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-weight: bold;
+    }
+
+    body,
+    main {
+      margin: 0;
+      padding: 0;
+      background-color: #1f2732;
+    }
+
+    button {
+      background-color: #53ffa9;
+      border-radius: 999px;
+      padding: 1em;
+      display: flex;
+      justify-content: center;
+      border: none;
+    }
+
+    button:hover {
+      animation: hoverGlow 1s ease-in;
+    }
+
+    button:active {
+      transform: scale(90%);
+    }
+
+    @keyframes hoverGlow {
+
+      0%,
+      100% {
+        box-shadow: 0px 0px 0px 0px rgba(45, 255, 196, 0.9);
+      }
+
+      25% {
+        box-shadow: 0px 0px 15px 3px rgba(45, 255, 196, 0.9);
+      }
+
+      50% {
+        box-shadow: 0px 0px 40px 6px rgba(45, 255, 196, 0.9);
+      }
+
+      75% {
+        box-shadow: 0px 0px 55px 9px rgba(45, 255, 196, 0.9);
+      }
+    }
+
+
+    .wrapper {
+      padding: 1em;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: #313a49;
+      width: 25em;
+      border-radius: 10px;
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      color: #cee2e9;
+      text-align: center;
+    }
+
+    .line {
+      background-color: #4e5d72;
+      width: 20em;
+      height: 1px;
+    }
+
+    .adviceNumber {
+      margin: 0;
+      padding: 0;
+      color: #53ffa9;
+      font-size: 1.3em;
+    }
+
+    h4 {
+      color: #cee2e9;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <h6 id="adviceNumber" class="adviceNumber">Advice #</h6>
+      <p id="advice">Click for advice!</p>
+      <div class="line"></div>
+      <button id="getQuote" type="button"><img src="./images/icon-dice.svg" alt="dado"></button>
+    </div>
+  </div>
+
+  <footer class="wrapper">
+    <h4 id="copyright"></h4>
+  </footer>
+
+  <script defer>
+    let button = document.getElementById('getQuote');
+    let advice = document.getElementById('advice');
+    let adviceNumber = document.getElementById('adviceNumber');
+    //Recupero el item guardado en el navegador
+    let number = parseInt(localStorage.getItem('Numero')) || 0;
+
+    adviceNumber.textContent = `Advice #${number}`;
+    const APIURL = 'https://api.adviceslip.com/advice'
+
+    button.addEventListener('click', getAdvice);
+
+    function getAdvice() {
+      fetch(APIURL)
+        .then(response => response.json())
+        .then(data => {
+          advice.textContent = '"' + data.slip.advice + '"';
+          number++;
+          //Lo asigno nuevamente luego de cada click en el boton
+          localStorage.setItem('Numero', number);
+          adviceNumber.textContent = `Advice #${number}`;
+          console.log(data);
+        })
+    }
+
+    //Esto cambia la fecha del copyright a la del año actual
+    const fecha = new Date();
+    const añoActual = fecha.getFullYear();
+    const h4Footer = document.getElementById("copyright").textContent = "©️ Copyright Kaled Emanuel Jaluf" + " " + añoActual;
+
+  </script>
+</body>
+
+</html>
